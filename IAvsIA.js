@@ -12,11 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		Cases = document.getElementsByClassName("case");
 		Info = document.getElementById("info");
 		Bouton = document.getElementById("new");
-		for(var i = 0; i < 6*7; i++){
-			Cases[i].addEventListener("click", function(){controller(this);});
-		}
 		Bouton.addEventListener("click", function(){newGame();});
-		newGame();
 	}
 
 	function putID(i, y) {
@@ -25,7 +21,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	function newGame() {
 		//console.log("dans newGame");
-		tour = prompt("Voulez vous être le joueur 1 ou le joueur 2 ?");
 		poss = 0;
 		over = false;
 		grid = new Array();
@@ -41,9 +36,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		for(var i = 0; i < 6*7; i++){
 			Cases[i].innerHTML = "";
 		}
-		Info.innerText = "C'est au joueur "+tour+" !";
-		if(tour == 2)
-			IA();
+		controller();
 	}
 
 	function copyGrid(action) {
@@ -1391,7 +1384,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			console.log("in random()");
 		}
 		if(win == true) {
-			Info.innerText = "Victoire de l'IA !";
+			Info.innerText = "Victoire de l'IA "+((tour == 1)?2:1)+" !";
 			over = true;
 		}
 		else if(isOver() == 2) {
@@ -1403,27 +1396,11 @@ document.addEventListener("DOMContentLoaded", function() {
 		return(0);
 	}
 
-	function controller(monThis) {
-		if(over == false) {
-			var id = monThis.id;
-			if(columnIsFull((id[2]*10/10)-1) == true){
-				console.log("true");
-				return(0);
-			}
-			putToken(firstEmptyCase((id[2]*10/10)-1), id[2] - 1, "humain");
-			updateHTML();
-			over = isOver();
-			if(over == 1) {
-				over = true;
-				Info.innerText = "Le joueur "+tour+" à gagné !";
-			}
-			else if(over == 2) {
-				over = true;
-				Info.innerText = "Egalité !";
-			}
-			else {
-				IA();
-			}
+	function controller() {
+		tour = 1;
+		while(isOver() == 0) {
+			IA()
+			tour = (tour == 1)?2:1;
 		}
 	}
 
