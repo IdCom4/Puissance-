@@ -855,6 +855,16 @@ document.addEventListener("DOMContentLoaded", function() {
 			copyGrid("restore");
 
 		}
+		id = findPatternLine([0,x,0,x,0]);
+		if(id != 0) {
+			copyGrid("save");
+			putToken(firstEmptyCase(id[8]-1), id[8] - 1, "IA");
+			if(canWinTest("humain") == false) {
+				return(true);
+			}
+			copyGrid("restore");
+
+		}
 		// id = findPattern2D([
 		// 					[x,x,0],
 		// 					[0,x,0],
@@ -1338,6 +1348,159 @@ document.addEventListener("DOMContentLoaded", function() {
 		return(false);
 	}
 
+	function testLineCould(line, column, joueur) {
+		var token == 0;
+		var tokenCrossed = false;
+		var blank = new String("99");
+		for(var y = 0; y < 7; y++) {
+			if(y == column)
+				tokenCrossed = true;
+			if(grid[line][y] == joueur)
+				token++;
+			else if(grid[line][y] == 0 && blank == "99")
+				blank = new String(new String(line)+y);
+			else {
+				blank = new String("99");
+				tokenCrossed = false;
+				token = 0;
+			}
+			if(token >= 3 && tokenCrossed == true && blank == "99" && y+1 < 7) {
+				if(grid[line][y+1] == 0)
+					return(new String(new String(line)+(y+1)));
+			}
+			if(token >= 3 && tokenCrossed == true && blank != "99")
+				return(blank);
+		}
+		return(false);
+	}
+
+	function testColumnCould(line, column, joueur) {
+		var token == 0;
+		var tokenCrossed = false;
+		var blank = new String("99");
+		for(var i = 5; i >= 0; i--) {
+			if(i == line)
+				tokenCrossed = true;
+			if(grid[i][column] == joueur)
+				token++;
+			else if(grid[i][column] == 0 && blank == "99")
+				blank = new String(new String(i)+column);
+			else {
+				blank = new String("99")
+				tokenCrossed = false;
+				token = 0;
+			}
+			if(token >= 3 && tokenCrossed == true && blank == "99" && i-1 >= 0) {
+				if(grid[i-1][column] == 0)
+					return(new String(new String(i-1)+column));
+			}
+			if(token >= 3 && tokenCrossed == true && blank != "99")
+				return(blank);
+		}
+		return(false);
+	}
+
+	function testDiagonalCould(line, column, joueur) {
+		var token == 0;
+		var tokenCrossed = false;
+		var i = line;
+		var y = column;
+		var blank = new String("99");
+		while(i > 0 && y > 0) {
+			i--;
+			y--;
+		}
+		while(i < 6 && y < 7) {
+			if(i == line && y == column)
+				tokenCrossed = true;
+			if(grid[i][y] == joueur)
+				token++;
+			else if(grid[i][y] == 0 && blank == "99")
+				blank = new String(new String(i)+y)
+			else {
+				blank = new String("99");
+				tokenCrossed = false;
+				token = 0;
+			}
+			if(token >= 3 && tokenCrossed == true && blank == "99" && i+1 < 6 && y+1 < 7) {
+				if(grid[i+1][y+1] == 0)
+					return(new String(new String(i+1)+(y+1)));
+			}
+			if(token >= 3 && tokenCrossed == true && blank != "99")
+				return(blank);
+			i++;
+			y++;
+		}
+		i = line;
+		y = column;
+		token = 0;
+		tokenCrossed = false;
+		blank = new String("99");
+		while(i > 0 && y < 7) {
+			i--;
+			y++;
+		}
+		while(i < 6 && y >= 0) {
+			if(i == line && y == column)
+				tokenCrossed = true;
+			if(grid[i][y] == joueur)
+				token++;
+			else if(grid[i][y] == 0 && blank == "99")
+				blank = new String(new String(i)+y)
+			else {
+				blank = new String("99");
+				tokenCrossed = false;
+				token = 0;
+			}
+			if(token >= 3 && tokenCrossed == true && blank == "99" && i+1 < 6 && y-1 >= 0) {
+				if(grid[i+1][y-1] == 0)
+					return(new String(new String(i+1)+(y-1)));
+			}
+			if(token >= 3 && tokenCrossed == true && blank != "99")
+				return(blank);
+			i++;
+			y--;
+		}
+		return(false);
+	}
+
+	function couldWinTest(line, column, joueur) {
+		joueur = (joueur == "IA")?(tour == 1)?2:1:(tour == 1)?1:2;
+		var id = testLineCould(line, column, joueur);
+		if(id != false)
+			return(id);
+		id = testColumnCould(line, column, joueur);
+		if(id != false)
+			return(id);
+		id = testDiagonalCould(line, column, joueur);
+		if(id != false)
+			return(id);
+		return(false);
+	}
+
+	function couldMultWin(joueur) {
+		console.log("	in couldMultWin");
+		var responseID;
+		for(var y = 0; y < 7; y++) {
+			if(columnIsFull(y) == false) {
+				copyGrid("save");
+				putToken(firstEmptyCase(y), y, joueur);
+				responseID = couldWinTest(firstEmptyCase(y), y, joueur);
+				if(responseID != false) {
+					putToken((10*responseID[1]/10)+1, y, joueur);
+					if(isOver() == 1 || isOver() == 2) {
+						copyGrid("restore");
+						putToken(firstEmptyCase(y), y, "IA");
+						if(canWinTest("humain") != false)
+							return(true);
+					}
+				}
+				copyGrid("restore");
+			}
+		}
+		return(false);
+	}
+
 	function canMultWin(joueur) {
 		var enemy = (joueur == "humain")?"IA":"humain";
 		var responseID;
@@ -1355,15 +1518,139 @@ document.addEventListener("DOMContentLoaded", function() {
 					if(canWinTestSpe(joueur, responseID[2], responseID) != false) {
 						copyGrid("restore");
 						putToken(firstEmptyCase(y), y, "IA");
-						if(canWinTest("humain") != false) {
-							copyGrid("restore");
-							return(false);
-						}
-						return(true);
+						if(canWinTest("humain") == false)
+							return(true);
 					}
 				}
 				copyGrid("restore");
 			}
+		}
+		return(false);
+	}
+
+	function lineBigEnought(line, column) {
+		var IA = (tour == 1)?2:1;
+		var token == 0;
+		var tokenCrossed = false;
+		for(var y = 0; y < 7; y++) {
+			if(y == column)
+				tokenCrossed = true;
+			if(grid[line][y] == IA || grid[line][y] == 0)
+				token++;
+			else {
+				tokenCrossed = false;
+				token = 0;
+			}
+			if(token >= 4 && tokenCrossed == true)
+				return(true);
+		}
+		return(false);
+	}
+
+	function columnBigEnought(line, column) {
+		var IA = (tour == 1)?2:1;
+		var token == 0;
+		var tokenCrossed = false;
+		for(var i = 5; i >= 0; i--) {
+			if(i == line)
+				tokenCrossed = true;
+			if(grid[i][column] == IA || grid[i][column] == 0)
+				token++;
+			else {
+				tokenCrossed = false;
+				token = 0;
+			}
+			if(token >= 4 && tokenCrossed == true)
+				return(true);
+		}
+		return(false);
+	}
+
+	function diagonalBigEnought(line, column) {
+		var IA = (tour == 1)?2:1;
+		var token == 0;
+		var tokenCrossed = false;
+		var i = line;
+		var y = column;
+		while(i > 0 && y > 0) {
+			i--;
+			y--;
+		}
+		while(i < 6 && y < 7) {
+			if(i == line && y == column)
+				tokenCrossed = true;
+			if(grid[i][y] == IA || grid[i][y] == 0)
+				token++;
+			else {
+				tokenCrossed = false;
+				token = 0;
+			}
+			if(token >= 4 && tokenCrossed == true)
+				return(true);
+			i++;
+			y++;
+		}
+		i = line;
+		y = column;
+		token = 0;
+		tokenCrossed = false;
+		while(i > 0 && y < 7) {
+			i--;
+			y++;
+		}
+		while(i < 6 && y >= 0) {
+			if(i == line && y == column)
+				tokenCrossed = true;
+			if(grid[i][y] == IA || grid[i][y] == 0)
+				token++;
+			else {
+				tokenCrossed = false;
+				token = 0;
+			}
+			if(token >= 4 && tokenCrossed == true)
+				return(true);
+			i++;
+			y--;
+		}
+		return(false);
+	}
+
+	function align2() {
+		console.log("	in align2");
+		var bestPoss = new Array();
+		var IA = (tour == 1)?2:1;
+		for(var y = 0; y < 7; y++) {
+			copyGrid("save");
+			putToken(firstEmptyCase(y), y, "IA");
+			bestPoss[y] = 0;
+			if(canWinTest("humain") == false && findNbrNearToken(firstEmptyCase(y), y, IA) >= 1) {
+				if(lineBigEnought(firstEmptyCase(y), y) == true || columnBigEnought(firstEmptyCase(y), y) == true || diagonalBigEnought(firstEmptyCase(y), y) == true)
+					bestPoss[y] = findNbrNearToken(firstEmptyCase(y), y, IA);
+			}
+			copyGrid("restore");
+		}
+		var tampon = bestPoss[0];
+		var tamponY = 0;
+		for(var y = 0; y < 6; y++) {
+			if(bestPoss[y] < bestPoss[y+1]) {
+				tampon = bestPoss[y];
+				bestPoss[y] = bestPoss[y+1];
+				bestPoss[y+1] = tampon;
+				tamponY = y;
+			}
+		}
+		if(bestPoss[6] >= 1) {
+			putToken(firstEmptyCase(y), y);
+			return(true);
+		}
+		for(var y = 0; y < 7; y++) {
+			copyGrid("save");
+			putToken(firstEmptyCase(y), y, "IA");
+			if(canWinTest("humain") == false) {
+				if(lineBigEnought(firstEmptyCase(y), y) == true || columnBigEnought(firstEmptyCase(y), y) == true || diagonalBigEnought(firstEmptyCase(y), y) == true)
+					return(true);
+			}
+			copyGrid("restore");
 		}
 		return(false);
 	}

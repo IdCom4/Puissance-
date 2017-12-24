@@ -848,6 +848,16 @@ document.addEventListener("DOMContentLoaded", function() {
 			copyGrid("restore");
 
 		}
+		id = findPatternLine([0,x,0,x,0]);
+		if(id != 0) {
+			copyGrid("save");
+			putToken(firstEmptyCase(id[8]-1), id[8] - 1, "IA");
+			if(canWinTest("humain") == false) {
+				return(true);
+			}
+			copyGrid("restore");
+
+		}
 		// id = findPattern2D([
 		// 					[x,x,0],
 		// 					[0,x,0],
@@ -1448,6 +1458,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	}
 
 	function couldWinTest(line, column, joueur) {
+		joueur = (joueur == "IA")?(tour == 1)?2:1:(tour == 1)?1:2;
 		var id = testLineCould(line, column, joueur);
 		if(id != false)
 			return(id);
