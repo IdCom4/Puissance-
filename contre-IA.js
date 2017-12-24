@@ -1530,7 +1530,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	function lineBigEnought(line, column) {
 		var IA = (tour == 1)?2:1;
-		var token == 0;
+		var token = 0;
 		var tokenCrossed = false;
 		for(var y = 0; y < 7; y++) {
 			if(y == column)
@@ -1549,7 +1549,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	function columnBigEnought(line, column) {
 		var IA = (tour == 1)?2:1;
-		var token == 0;
+		var token = 0;
 		var tokenCrossed = false;
 		for(var i = 5; i >= 0; i--) {
 			if(i == line)
@@ -1568,7 +1568,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	function diagonalBigEnought(line, column) {
 		var IA = (tour == 1)?2:1;
-		var token == 0;
+		var token = 0;
 		var tokenCrossed = false;
 		var i = line;
 		var y = column;
