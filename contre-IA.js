@@ -1349,7 +1349,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	}
 
 	function testLineCould(line, column, joueur) {
-		var token == 0;
+		var token = 0;
 		var tokenCrossed = false;
 		var blank = new String("99");
 		for(var y = 0; y < 7; y++) {
@@ -1375,7 +1375,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	}
 
 	function testColumnCould(line, column, joueur) {
-		var token == 0;
+		var token = 0;
 		var tokenCrossed = false;
 		var blank = new String("99");
 		for(var i = 5; i >= 0; i--) {
@@ -1401,7 +1401,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	}
 
 	function testDiagonalCould(line, column, joueur) {
-		var token == 0;
+		var token = 0;
 		var tokenCrossed = false;
 		var i = line;
 		var y = column;
