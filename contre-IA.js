@@ -1465,6 +1465,8 @@ document.addEventListener("DOMContentLoaded", function() {
 	}
 
 	function couldWinTest(line, column, joueur) {
+		if(line < 0 || line > 5)
+			return(false);
 		joueur = (joueur == "IA")?(tour == 1)?2:1:(tour == 1)?1:2;
 		var id = testLineCould(line, column, joueur);
 		if(id != false)
