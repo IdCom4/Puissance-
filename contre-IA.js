@@ -1625,9 +1625,11 @@ document.addEventListener("DOMContentLoaded", function() {
 			copyGrid("save");
 			putToken(firstEmptyCase(y), y, "IA");
 			bestPoss[y] = 0;
-			if(canWinTest("humain") == false && findNbrNearToken(firstEmptyCase(y), y, IA) >= 1) {
-				if(lineBigEnought(firstEmptyCase(y), y) == true || columnBigEnought(firstEmptyCase(y), y) == true || diagonalBigEnought(firstEmptyCase(y), y) == true)
-					bestPoss[y] = findNbrNearToken(firstEmptyCase(y), y, IA);
+			if(canWinTest("humain") == false && firstEmptyCase(y) != 10) {
+				if(findNbrNearToken(firstEmptyCase(y), y, IA) >= 1) {
+					if(lineBigEnought(firstEmptyCase(y), y) == true || columnBigEnought(firstEmptyCase(y), y) == true || diagonalBigEnought(firstEmptyCase(y), y) == true)
+						bestPoss[y] = findNbrNearToken(firstEmptyCase(y), y, IA);
+				}
 			}
 			copyGrid("restore");
 		}
@@ -1648,7 +1650,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		for(var y = 0; y < 7; y++) {
 			copyGrid("save");
 			putToken(firstEmptyCase(y), y, "IA");
-			if(canWinTest("humain") == false) {
+			if(canWinTest("humain") == false && firstEmptyCase(y) != 10) {
 				if(lineBigEnought(firstEmptyCase(y), y) == true || columnBigEnought(firstEmptyCase(y), y) == true || diagonalBigEnought(firstEmptyCase(y), y) == true)
 					return(true);
 			}
