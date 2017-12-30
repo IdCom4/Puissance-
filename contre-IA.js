@@ -280,7 +280,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			token = 0;
 			lastTokenType = grid[iBis][yBis];
 			blank = new String("99");
-			console.log("				start with iBis = "+iBis+" && yBis = "+yBis+" && token = "+token);
+			//console.log("				start with iBis = "+iBis+" && yBis = "+yBis+" && token = "+token);
 			while(yBis >= 0 && iBis < 6) {
 				if(grid[iBis][yBis] == joueur && (lastTokenType == joueur || (lastTokenType == 0 && blank != "99"))){
 					token++;
@@ -296,7 +296,7 @@ document.addEventListener("DOMContentLoaded", function() {
 					blank = new String("99");
 				}
 				lastTokenType = grid[iBis][yBis];
-				console.log("				iBis = "+iBis+" && yBis = "+yBis);
+				//console.log("				iBis = "+iBis+" && yBis = "+yBis);
 				if(token >= 3 && blank == "99" && firstEmptyCase(yBis+3) == iBis - 3) {
 					id+= (iBis - 3);
 					id+= (yBis + 3);
@@ -824,10 +824,84 @@ document.addEventListener("DOMContentLoaded", function() {
 				else {
 					finded = 0;
 					id = new String();
+					if(grid[i][y] == toFind[finded]) {
+						finded++;
+						id+=(i+1)+"-"+(y+1);
+					}
 				}
 				if(finded == toFind.length && isPlayable(id, toFind.length) == true)
 					return(id);
 			}
+		}
+		return(0);
+	}
+
+	function findPatternDiagonals(toFind) {
+		var finded;
+		var id;
+		var y = 0;
+		var i = 0;
+		var iBis;
+		var yBis;
+		for(var n = 0; n < 6+(7-1); n++) {
+			if(y >= 7){
+				y = 6;
+				i++;
+			}
+			yBis = y;
+			iBis = i;
+			finded = 0;
+			id = new String();
+			while(yBis >= 0 && iBis < 6) {
+				if(grid[iBis][yBis] == toFind[finded]) {
+					finded++;
+					id+=(iBis+1)+"-"+(yBis+1);
+				}
+				else {
+					finded = 0;
+					id = new String();
+					if(grid[iBis][yBis] == toFind[finded]) {
+						finded++;
+						id+=(iBis+1)+"-"+(yBis+1);
+					}
+				}
+				if(finded == toFind.length && isPlayable(id, toFind.length) == true)
+					return(id);
+				yBis--;
+				iBis++;
+			}
+			y++;
+		}
+		i = 5;
+		y = 0;
+		for(var n = 0; n < 6+(7-1); n++) {
+			if(i < 0){
+				i = 0;
+				y++;
+			}
+			yBis = y;
+			iBis = i;
+			finded = 0;
+			id = new String();
+			while(yBis < 7 && iBis < 6) {
+				if(grid[iBis][yBis] == toFind[finded]) {
+					finded++;
+					id+=(iBis+1)+"-"+(yBis+1);
+				}
+				else {
+					finded = 0;
+					id = new String();
+					if(grid[iBis][yBis] == toFind[finded]) {
+						finded++;
+						id+=(iBis+1)+"-"+(yBis+1);
+					}
+				}
+				if(finded == toFind.length && isPlayable(id, toFind.length) == true)
+					return(id);
+				yBis++;
+				iBis++;
+			}
+			i--;
 		}
 		return(0);
 	}
@@ -837,32 +911,87 @@ document.addEventListener("DOMContentLoaded", function() {
 		var x = (joueur == "IA")?((tour == 1)?2:1):((tour == 1)?1:2);
 		id = findPatternLine([0,0,x,x,0]);
 		if(id != 0) {
-			copyGrid("save");
-			putToken(firstEmptyCase(id[5]-1), id[5] - 1, "IA");
-			if(canWinTest("humain") == false) {
-				return(true);
+			for(var y = 2; y < 5*3; y+=2) {
+				if(y != 8 && y != 11) {
+					copyGrid("save");
+					putToken(firstEmptyCase(id[y]-1), id[y] - 1, "IA");
+					if(canWinTest("humain") == false) {
+						return(true);
+					}
+					copyGrid("restore");
+				}
 			}
-			copyGrid("restore");
 
 		}
 		id = findPatternLine([0,x,x,0,0]);
 		if(id != 0) {
-			copyGrid("save");
-			putToken(firstEmptyCase(id[11]-1), id[11] - 1, "IA");
-			if(canWinTest("humain") == false) {
-				return(true);
+			for(var y = 2; y < 5*3; y+=2) {
+				if(y != 5 && y != 8) {
+					copyGrid("save");
+					putToken(firstEmptyCase(id[y]-1), id[y] - 1, "IA");
+					if(canWinTest("humain") == false) {
+						return(true);
+					}
+					copyGrid("restore");
+				}
 			}
-			copyGrid("restore");
 
 		}
 		id = findPatternLine([0,x,0,x,0]);
 		if(id != 0) {
-			copyGrid("save");
-			putToken(firstEmptyCase(id[8]-1), id[8] - 1, "IA");
-			if(canWinTest("humain") == false) {
-				return(true);
+			for(var y = 2; y < 5*3; y+=2) {
+				if(y != 5 && y != 11) {
+					copyGrid("save");
+					putToken(firstEmptyCase(id[y]-1), id[y] - 1, "IA");
+					if(canWinTest("humain") == false) {
+						return(true);
+					}
+					copyGrid("restore");
+				}
 			}
-			copyGrid("restore");
+
+		}
+		
+		id = findPatternDiagonals([0,0,x,x,0]);
+		if(id != 0) {
+			for(var y = 2; y < 5*3; y+=2) {
+				if(y != 8 && y != 11) {
+					copyGrid("save");
+					putToken(firstEmptyCase(id[y]-1), id[y] - 1, "IA");
+					if(canWinTest("humain") == false) {
+						return(true);
+					}
+					copyGrid("restore");
+				}
+			}
+
+		}
+		id = findPatternDiagonals([0,x,x,0,0]);
+		if(id != 0) {
+			for(var y = 2; y < 5*3; y+=2) {
+				if(y != 5 && y != 8) {
+					copyGrid("save");
+					putToken(firstEmptyCase(id[y]-1), id[y] - 1, "IA");
+					if(canWinTest("humain") == false) {
+						return(true);
+					}
+					copyGrid("restore");
+				}
+			}
+
+		}
+		id = findPatternDiagonals([0,x,0,x,0]);
+		if(id != 0) {
+			for(var y = 2; y < 5*3; y+=2) {
+				if(y != 5 && y != 11) {
+					copyGrid("save");
+					putToken(firstEmptyCase(id[y]-1), id[y] - 1, "IA");
+					if(canWinTest("humain") == false) {
+						return(true);
+					}
+					copyGrid("restore");
+				}
+			}
 
 		}
 		// id = findPattern2D([
@@ -957,18 +1086,18 @@ document.addEventListener("DOMContentLoaded", function() {
 		var nbrNearToken = 0;
 		if(line == 10)
 			return(0);
-		line -= 1;
-		column -= 1;
-		var columnOrigin = column;
+		var lineTest = line - 1;
+		var columnTest = column - 1;
+		var columnOrigin = columnTest;
 		for(var x = 0; x < 9; x++) {
 			if(x % 3 == 0 && x != 0) {
-				line++;
-				column = columnOrigin;
+				lineTest++;
+				columnTest = columnOrigin;
 			}
 			else
-				column++;
-			if(line >= 0 && line < 6 && column >= 0 && column < 7) {
-				if(grid[line][column] == IA)
+				columnTest++;
+			if(lineTest >= 0 && lineTest < 6 && columnTest >= 0 && columnTest < 7 && lineTest != line && columnTest != column) {
+				if(grid[lineTest][columnTest] == IA)
 					nbrNearToken++;
 			}
 		}
@@ -1481,19 +1610,21 @@ document.addEventListener("DOMContentLoaded", function() {
 	}
 
 	function couldMultWin(joueur) {
-		console.log("	in couldMultWin");
+		console.log("	in couldMultWin for player "+joueur);
+		var enemy = (joueur == "humain")?"IA":"humain";
 		var responseID;
 		for(var y = 0; y < 7; y++) {
 			if(columnIsFull(y) == false) {
 				copyGrid("save");
 				putToken(firstEmptyCase(y), y, joueur);
 				responseID = couldWinTest(firstEmptyCase(y), y, joueur);
-				if(responseID != false) {
-					putToken((10*responseID[1]/10)+1, y, joueur);
+				if(responseID != false && responseID[0]-1 >= 0) {
+					putToken(responseID[0], responseID[1], enemy);
+					putToken(responseID[0]-1, responseID[1], joueur);
 					if(isOver() == 1 || isOver() == 2) {
 						copyGrid("restore");
 						putToken(firstEmptyCase(y), y, "IA");
-						if(canWinTest("humain") != false)
+						if(canWinTest("humain") == false)
 							return(true);
 					}
 				}
@@ -1510,12 +1641,12 @@ document.addEventListener("DOMContentLoaded", function() {
 		for(var y = 0; y < 7; y++) {
 			if(columnIsFull(y) == false) {
 				copyGrid("save");
-				console.log("		first putToken case = "+(firstEmptyCase(y)+1)+"-"+(y+1));
+				//console.log("		first putToken case = "+(firstEmptyCase(y)+1)+"-"+(y+1));
 				putToken(firstEmptyCase(y), y, joueur);
 				responseID = canWinTest(joueur);
 				if(responseID != false) {
-					console.log("		responseID[0] = "+responseID[0]+" && responseID[1] = "+responseID[1]);
-					console.log("		firstEmptyCase(responseID[1]) = "+firstEmptyCase(responseID[1])+" && responseID[1] = "+responseID[1]+" && enemy = "+enemy);
+					//console.log("		responseID[0] = "+responseID[0]+" && responseID[1] = "+responseID[1]);
+					//console.log("		firstEmptyCase(responseID[1]) = "+firstEmptyCase(responseID[1])+" && responseID[1] = "+responseID[1]+" && enemy = "+enemy);
 					putToken(firstEmptyCase(responseID[1]), responseID[1], enemy);
 					if(canWinTestSpe(joueur, responseID[2], responseID) != false) {
 						copyGrid("restore");
@@ -1620,41 +1751,40 @@ document.addEventListener("DOMContentLoaded", function() {
 	function align2() {
 		console.log("	in align2");
 		var bestPoss = new Array();
+		var yBestPoss = new Array();
 		var IA = (tour == 1)?2:1;
+
 		for(var y = 0; y < 7; y++) {
-			copyGrid("save");
-			putToken(firstEmptyCase(y), y, "IA");
 			bestPoss[y] = 0;
-			if(canWinTest("humain") == false && firstEmptyCase(y) != 10) {
-				if(findNbrNearToken(firstEmptyCase(y), y, IA) >= 1) {
-					if(lineBigEnought(firstEmptyCase(y), y) == true || columnBigEnought(firstEmptyCase(y), y) == true || diagonalBigEnought(firstEmptyCase(y), y) == true)
-						bestPoss[y] = findNbrNearToken(firstEmptyCase(y), y, IA);
+			yBestPoss[y] = y;
+			if(columnIsFull(y) == false) {
+				if(findNbrNearToken(firstEmptyCase(y), y, IA) >= 1 && (lineBigEnought(firstEmptyCase(y), y) == true || columnBigEnought(firstEmptyCase(y), y) == true || diagonalBigEnought(firstEmptyCase(y), y) == true)) {
+					bestPoss[y] = findNbrNearToken(firstEmptyCase(y), y, IA);
 				}
 			}
-			copyGrid("restore");
 		}
-		var tampon = bestPoss[0];
-		var tamponY = 0;
-		for(var y = 0; y < 6; y++) {
-			if(bestPoss[y] < bestPoss[y+1]) {
-				tampon = bestPoss[y];
-				bestPoss[y] = bestPoss[y+1];
-				bestPoss[y+1] = tampon;
-				tamponY = y;
+		for(var z = 0; z < 7; z++) {
+			for(var y = 0; y < 6-z; y++) {
+				if(bestPoss[y] > bestPoss[y+1]) {
+					tampon = bestPoss[y];
+					bestPoss[y] = bestPoss[y+1];
+					bestPoss[y+1] = tampon;
+
+					tampon = yBestPoss[y];
+					yBestPoss[y] = yBestPoss[y+1];
+					yBestPoss[y+1] = tampon;
+				}
 			}
 		}
-		if(bestPoss[6] >= 1) {
-			putToken(firstEmptyCase(y), y);
-			return(true);
-		}
-		for(var y = 0; y < 7; y++) {
-			copyGrid("save");
-			putToken(firstEmptyCase(y), y, "IA");
-			if(canWinTest("humain") == false && firstEmptyCase(y) != 10) {
-				if(lineBigEnought(firstEmptyCase(y), y) == true || columnBigEnought(firstEmptyCase(y), y) == true || diagonalBigEnought(firstEmptyCase(y), y) == true)
+
+		for(var y = 6; y >= 0; y--) {
+			if(bestPoss[y] >= 1) {
+				copyGrid("save");
+				putToken(firstEmptyCase(yBestPoss[y]), yBestPoss[y], "IA");
+				if(canWinTest("humain") == false)
 					return(true);
+				copyGrid("restore");
 			}
-			copyGrid("restore");
 		}
 		return(false);
 	}
