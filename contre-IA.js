@@ -907,11 +907,11 @@ document.addEventListener("DOMContentLoaded", function() {
 	}
 
 	function tryPattern(joueur) {
-		console.log("	in tryPattern");
+		console.log("	in tryPattern for "+joueur);
 		var x = (joueur == "IA")?((tour == 1)?2:1):((tour == 1)?1:2);
 		id = findPatternLine([0,0,x,x,0]);
 		if(id != 0) {
-			for(var y = 2; y < 5*3; y+=2) {
+			for(var y = 5; y < 5*3; y+=3) {
 				if(y != 8 && y != 11) {
 					copyGrid("save");
 					putToken(firstEmptyCase(id[y]-1), id[y] - 1, "IA");
@@ -925,8 +925,8 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 		id = findPatternLine([0,x,x,0,0]);
 		if(id != 0) {
-			for(var y = 2; y < 5*3; y+=2) {
-				if(y != 5 && y != 8) {
+			for(var y = 2; y < 5*3; y+=3) {
+				if(y != 5 && y != 8 && y != 14) {
 					copyGrid("save");
 					putToken(firstEmptyCase(id[y]-1), id[y] - 1, "IA");
 					if(canWinTest("humain") == false) {
@@ -939,7 +939,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 		id = findPatternLine([0,x,0,x,0]);
 		if(id != 0) {
-			for(var y = 2; y < 5*3; y+=2) {
+			for(var y = 2; y < 5*3; y+=3) {
 				if(y != 5 && y != 11) {
 					copyGrid("save");
 					putToken(firstEmptyCase(id[y]-1), id[y] - 1, "IA");
@@ -954,7 +954,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		
 		id = findPatternDiagonals([0,0,x,x,0]);
 		if(id != 0) {
-			for(var y = 2; y < 5*3; y+=2) {
+			for(var y = 5; y < 5*3; y+=3) {
 				if(y != 8 && y != 11) {
 					copyGrid("save");
 					putToken(firstEmptyCase(id[y]-1), id[y] - 1, "IA");
@@ -968,8 +968,8 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 		id = findPatternDiagonals([0,x,x,0,0]);
 		if(id != 0) {
-			for(var y = 2; y < 5*3; y+=2) {
-				if(y != 5 && y != 8) {
+			for(var y = 2; y < 5*3; y+=3) {
+				if(y != 5 && y != 8 && y != 14) {
 					copyGrid("save");
 					putToken(firstEmptyCase(id[y]-1), id[y] - 1, "IA");
 					if(canWinTest("humain") == false) {
@@ -982,7 +982,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 		id = findPatternDiagonals([0,x,0,x,0]);
 		if(id != 0) {
-			for(var y = 2; y < 5*3; y+=2) {
+			for(var y = 2; y < 5*3; y+=3) {
 				if(y != 5 && y != 11) {
 					copyGrid("save");
 					putToken(firstEmptyCase(id[y]-1), id[y] - 1, "IA");
